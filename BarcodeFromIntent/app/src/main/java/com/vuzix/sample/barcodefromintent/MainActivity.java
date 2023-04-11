@@ -36,11 +36,13 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vuzix.sdk.barcode.BarcodeType2;
 import com.vuzix.sdk.barcode.ScanResult2;
 import com.vuzix.sdk.barcode.ScannerIntent;
 
@@ -55,8 +57,18 @@ import com.vuzix.sdk.barcode.ScannerIntent;
  */
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE_SCAN = 90001;  // Must be unique within this Activity
+    private final static String TAG = "barcodeSample";
+
     private Button mButtonScan;
-    private EditText mTextEntryField;
+    private TextView mTextEntryField;
+
+    // Limiting the barcode formats to those you expect to encounter improves the speed of scanning
+    // and increases the likelihood of properly detecting a barcode.
+    private final String requestedBarcodeTypes[] = {
+            BarcodeType2.QR_CODE.name(),
+            BarcodeType2.UPC_A.name(),
+            BarcodeType2.CODE_128.name()
+    };
 
     /**
      * Sets up the User Interface
@@ -67,7 +79,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextEntryField = (EditText) findViewById(R.id.scannedTextResult);
+        mTextEntryField = (TextView) findViewById(R.id.scannedTextResult);
 
         mButtonScan = (Button) findViewById(R.id.btn_scan_barcode);
         mButtonScan.requestFocusFromTouch();
@@ -85,8 +97,9 @@ public class MainActivity extends Activity {
      */
     private void OnScanClick() {
         Intent scannerIntent = new Intent(ScannerIntent.ACTION);
+        scannerIntent.putExtra(ScannerIntent.EXTRA_BARCODE2_TYPES, requestedBarcodeTypes);
         try {
-            // The Vuzix  M-Series has a built-in Barcode Scanner app that is registered for this intent.
+            // The Vuzix smart glasses have a built-in Barcode Scanner app that is registered for this intent.
             startActivityForResult(scannerIntent, REQUEST_CODE_SCAN);
         } catch (ActivityNotFoundException activityNotFound) {
             Toast.makeText(this, R.string.only_on_mseries, Toast.LENGTH_LONG).show();
@@ -106,7 +119,13 @@ public class MainActivity extends Activity {
             case REQUEST_CODE_SCAN:
                 if (resultCode == Activity.RESULT_OK) {
                     ScanResult2 scanResult = data.getParcelableExtra(ScannerIntent.RESULT_EXTRA_SCAN_RESULT2);
-                    mTextEntryField.setText( scanResult.getText() );
+                    if(scanResult != null) {
+                        Log.d(TAG, "Got result: " + scanResult.getText());
+                        mTextEntryField.setText(scanResult.getText());
+                    } else {
+                        Log.d(TAG, "No data");
+                        mTextEntryField.setText(R.string.no_data);
+                    }
                 }
                 return;
         }
