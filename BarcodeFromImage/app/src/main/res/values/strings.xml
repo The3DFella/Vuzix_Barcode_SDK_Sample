@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Barcode From Image</string>
+    <string name="scan_barcode">Press any button to scan barcode</string>
+    <string name="no_permission">Camera permission is required for this app</string>
+    <string name="no_barcode_in_image">No barcode detected</string>
+</resources>
