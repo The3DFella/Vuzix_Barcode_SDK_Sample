@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+
+android {
+    // Note: The compileSdkVersion and minSdkVersion may be modified so this app can run
+    // on the desired Vuzix® smart glasses.  Please see the Vuzix developer center for
+    // more information on specific smart glasses.
+    //
+    // Vuzix® smart glasses API levels:
+    //   Vuzix Blade®:                             API 22
+    //   Vuzix Blade® upgraded:                    API 22
+    //   Vuzix Blade 2™:                           API 30
+    //   Vuzix M300™:                              API 23
+    //   Vuzix M300XL™:                            API 23
+    //   Vuzix M400™ and Vuzix M4000™ version 1.x: API 27
+    //   Vuzix M400™ and Vuzix M4000™ version 2.x: API 28
+    //   Vuzix M400™ and Vuzix M4000™ version 3.x: API 30
+    //   Vuzix Shield™:                            API 30
+    compileSdkVersion 30
+    defaultConfig {
+        applicationId "com.vuzix.sample.barcodefromintent"
+        minSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+    implementation 'com.vuzix:sdk-barcode:1.71'
+}
