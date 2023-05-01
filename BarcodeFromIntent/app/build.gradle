@@ -33,5 +33,5 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'com.vuzix:sdk-barcode:1.71'
+    implementation 'com.vuzix:sdk-barcode:1.72'
 }

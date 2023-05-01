@@ -33,5 +33,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.vuzix:sdk-barcode:1.71'
+    implementation 'com.vuzix:sdk-barcode:1.72'
 }

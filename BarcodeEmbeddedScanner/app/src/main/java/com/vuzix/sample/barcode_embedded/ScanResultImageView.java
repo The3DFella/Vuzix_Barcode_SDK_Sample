@@ -50,7 +50,7 @@ import android.widget.ImageView;
 public class ScanResultImageView extends ImageView {
 
     private Point[] location;
-    private Paint locationPaint;
+    private final Paint locationPaint;
 
     public ScanResultImageView(Context context) {
         this(context, null);
@@ -78,14 +78,6 @@ public class ScanResultImageView extends ImageView {
         locationPaint.setStyle(Paint.Style.STROKE);
         locationPaint.setStrokeCap(Paint.Cap.ROUND);
         locationPaint.setAntiAlias(true);
-    }
-
-    /**
-     * Accessor to get the location of the barcode within the image
-     * @return Location of barcode
-     */
-    public Point[] getLocation() {
-        return location;
     }
 
     /**

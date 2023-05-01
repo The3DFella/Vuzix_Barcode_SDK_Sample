@@ -37,7 +37,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,19 +51,18 @@ import com.vuzix.sdk.barcode.ScannerIntent;
  * barcode and display the encoded text to the user
  *
  * Using intents is by far the simplest way to add barcode scanning to your application. Since the
- * barcpde application is a separate activity it handles everything including permissions.
+ * barcode application is a separate activity it handles everything including permissions.
  * This leaves very little to be done by this application.
  */
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE_SCAN = 90001;  // Must be unique within this Activity
     private final static String TAG = "barcodeSample";
 
-    private Button mButtonScan;
     private TextView mTextEntryField;
 
     // Limiting the barcode formats to those you expect to encounter improves the speed of scanning
     // and increases the likelihood of properly detecting a barcode.
-    private final String requestedBarcodeTypes[] = {
+    private final String[] requestedBarcodeTypes = {
             BarcodeType2.QR_CODE.name(),
             BarcodeType2.UPC_A.name(),
             BarcodeType2.CODE_128.name()
@@ -81,15 +79,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mTextEntryField = (TextView) findViewById(R.id.scannedTextResult);
 
-        mButtonScan = (Button) findViewById(R.id.btn_scan_barcode);
-        mButtonScan.requestFocusFromTouch();
-        mButtonScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) throws IllegalArgumentException,
-                    SecurityException, IllegalStateException {
-                OnScanClick();
-            }
-        });
+        Button buttonScan = (Button) findViewById(R.id.btn_scan_barcode);
+        buttonScan.requestFocusFromTouch();
+        buttonScan.setOnClickListener(view -> OnScanClick());
     }
 
     /**
@@ -111,23 +103,22 @@ public class MainActivity extends Activity {
      *
      * @param requestCode int identifier you provided in startActivityForResult
      * @param resultCode int result of the scan operation
-     * @param data Intent containing a ScanResult whenver the resultCode indicates RESULT_OK
+     * @param data Intent containing a ScanResult whenever the resultCode indicates RESULT_OK
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_SCAN:
-                if (resultCode == Activity.RESULT_OK) {
-                    ScanResult2 scanResult = data.getParcelableExtra(ScannerIntent.RESULT_EXTRA_SCAN_RESULT2);
-                    if(scanResult != null) {
-                        Log.d(TAG, "Got result: " + scanResult.getText());
-                        mTextEntryField.setText(scanResult.getText());
-                    } else {
-                        Log.d(TAG, "No data");
-                        mTextEntryField.setText(R.string.no_data);
-                    }
+        if (requestCode == REQUEST_CODE_SCAN) {
+            if (resultCode == Activity.RESULT_OK) {
+                ScanResult2 scanResult = data.getParcelableExtra(ScannerIntent.RESULT_EXTRA_SCAN_RESULT2);
+                if (scanResult != null) {
+                    Log.d(TAG, "Got result: " + scanResult.getText());
+                    mTextEntryField.setText(scanResult.getText());
+                } else {
+                    Log.d(TAG, "No data");
+                    mTextEntryField.setText(R.string.no_data);
                 }
-                return;
+            }
+            return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

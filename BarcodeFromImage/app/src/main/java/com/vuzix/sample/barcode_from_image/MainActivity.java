@@ -142,13 +142,10 @@ public class MainActivity extends Activity {
         mUiThreadHandler = new Handler(Looper.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case TAKE_PICTURE_COMPLETED:
-                        onPictureComplete();
-                        break;
-                    default:
-                        super.handleMessage(msg);
-                        break;
+                if (msg.what == TAKE_PICTURE_COMPLETED) {
+                    onPictureComplete();
+                } else {
+                    super.handleMessage(msg);
                 }
             }
         };
@@ -395,7 +392,7 @@ public class MainActivity extends Activity {
     private void handleCaptureCompleted(){
         try {
             Log.d(LOG_TAG,"handleCaptureCompleted()");
-            List<Surface> outputSurfaces = new ArrayList<Surface>();
+            List<Surface> outputSurfaces = new ArrayList<>();
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             Surface surface = new Surface(texture);
             outputSurfaces.add(surface);
@@ -407,12 +404,7 @@ public class MainActivity extends Activity {
             mCaptureRequestBuilder.addTarget(reader.getSurface());
 
             // Create an image listener that run on our background thread and processes the image
-            reader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-                @Override
-                public void onImageAvailable(ImageReader reader) {
-                    handleCameraImageOnWorkerThread(reader);
-                }
-            }, mBackgroundHandler);
+            reader.setOnImageAvailableListener(this::handleCameraImageOnWorkerThread, mBackgroundHandler);
 
             // Create a configuration session. This handler can use our UI thread (null)
             mCameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {

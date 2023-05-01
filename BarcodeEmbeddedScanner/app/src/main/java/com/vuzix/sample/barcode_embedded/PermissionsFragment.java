@@ -32,7 +32,6 @@
 package com.vuzix.sample.barcode_embedded;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -44,7 +43,6 @@ import android.widget.Toast;
 /**
  * A fragment to encapsulate the run-time permissions
  */
-@TargetApi(23)
 public class PermissionsFragment extends Fragment {
 
     private static final int REQUEST_CODE_PERMISSIONS = 0;
@@ -101,24 +99,23 @@ public class PermissionsFragment extends Fragment {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSIONS:
-                if (permissions.length == 1) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        permissionsGranted();  // Permission was just granted by the user.
-                    } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                        requestPermissions();  // Ask for permission again
-                    } else {
-                        // Permission was denied. Give the user a hint, and exit
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        getActivity().finish();
-                        Toast.makeText(getContext(), R.string.grant_camera_permission, Toast.LENGTH_LONG).show();
-                    }
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (permissions.length == 1) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionsGranted();  // Permission was just granted by the user.
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    requestPermissions();  // Ask for permission again
+                } else {
+                    // Permission was denied. Give the user a hint, and exit
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    getActivity().finish();
+                    Toast.makeText(getContext(), R.string.grant_camera_permission, Toast.LENGTH_LONG).show();
                 }
-                return;
+            }
+            return;
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

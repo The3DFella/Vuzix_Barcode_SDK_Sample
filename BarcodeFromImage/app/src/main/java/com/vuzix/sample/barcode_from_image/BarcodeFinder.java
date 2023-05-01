@@ -60,9 +60,8 @@ import java.nio.ByteBuffer;
  */
 
 class BarcodeFinder {
-
     private Scanner2 mScanner=null;
-    private final BarcodeType2 barcodeTypes[] = {
+    private final BarcodeType2[] barcodeTypes = {
             BarcodeType2.QR_CODE,
             BarcodeType2.CODE_128
     };
@@ -70,7 +69,7 @@ class BarcodeFinder {
     /**
      * Initialize the scan engine
      *
-     * @note: Failure to do this will leave the engine in a demonstration mode, and scan data will not be usable.
+     * note: Failure to do this will leave the engine in a demonstration mode, and scan data will not be usable.
      */
     public BarcodeFinder(Context iContext) {
 
@@ -144,7 +143,7 @@ class BarcodeFinder {
         Log.d(MainActivity.LOG_TAG, "Processing image: " + width + "x" + height);
 
         // The format of the rect is upper left x, upper left  y, width, height
-        Rect scanRects[] = {
+        Rect[] scanRects = {
                 new Rect(0, 0, width, height), // Full image
                 //new Rect(width/2, 2*height/3, width/2, height/3), // upper left - 1/2 width 1/3 height. (Note: image is upside-down when M400 is on the right eye)
                 //new Rect(width/4, height/3, width/2, height/3), // center - 1/2 width, 1/3 height.

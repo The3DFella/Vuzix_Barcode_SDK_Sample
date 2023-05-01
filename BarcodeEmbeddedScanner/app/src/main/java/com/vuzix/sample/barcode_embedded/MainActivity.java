@@ -57,6 +57,13 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
 
     private static final String TAG_PERMISSIONS_FRAGMENT = "permissions";
 
+    // Limiting the barcode formats to those you expect to encounter improves the speed of scanning
+    // and increases the likelihood of properly detecting a barcode.
+    private final String[] barcodeTypes = {
+            BarcodeType2.QR_CODE.name(),
+            BarcodeType2.CODE_128.name()
+    };
+
     private View scanInstructionsView;
     private ScannerFragment.Listener2 mScannerListener;
 
@@ -84,7 +91,7 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
 
         scanInstructionsView = findViewById(R.id.scan_instructions);
 
-        creeateScannerListener();
+        createScannerListener();
 
         Fragment scannerFragment = getFragmentManager().findFragmentById(R.id.fragment_container);
         if (scannerFragment instanceof ScannerFragment) {
@@ -107,10 +114,6 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
 
     private Bundle setScannerArgs() {
         Bundle args = new Bundle();
-        String barcodeTypes[] = {
-                BarcodeType2.QR_CODE.name(),
-                BarcodeType2.CODE_128.name()
-        };
         args.putStringArray(ScannerFragment.ARG_BARCODE2_TYPES, barcodeTypes);
         args.putBoolean(ScannerFragment.ARG_ZOOM_IN_MODE, true);
         return args;
@@ -127,16 +130,9 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
         scanInstructionsView.setVisibility(View.VISIBLE);  // Put the instructions back on the screen
     }
 
-    private void creeateScannerListener() {
+    private void createScannerListener() {
         try {
-            /**
-             * This is a simple wrapper class.
-             *
-             * We do this rather than having our MainActivity directly implement
-             * ScannerFragment.Listener so we may gracefully catch the NoClassDefFoundError
-             * if we are not running on an M-Series.
-             */
-            class OurScannerListener implements ScannerFragment.Listener2 {
+            mScannerListener = new ScannerFragment.Listener2() {
                 @Override
                 public void onScan2Result(Bitmap bitmap, ScanResult2[] results) {
                     onScanFragmentScanResult(bitmap,results);
@@ -146,10 +142,7 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
                 public void onError() {
                     onScanFragmentError();
                 }
-            }
-
-            mScannerListener = new OurScannerListener();
-
+            };
         } catch (NoClassDefFoundError e) {
             // We get this exception if the SDK stubs against which we compiled cannot be resolved
             // at runtime. This occurs if the code is not being run on an M400 supporting the voice
@@ -207,12 +200,7 @@ public class MainActivity extends Activity implements PermissionsFragment.Listen
     private void beep() {
         MediaPlayer player = new MediaPlayer();
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-        });
+        player.setOnCompletionListener(MediaPlayer::release);
         try {
             AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
             player.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
