@@ -57,6 +57,7 @@ import com.vuzix.sdk.barcode.ScannerIntent;
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE_SCAN = 90001;  // Must be unique within this Activity
     private final static String TAG = "barcodeSample";
+    private boolean cameraToggle = false;
 
     private TextView mTextEntryField;
 
@@ -90,6 +91,13 @@ public class MainActivity extends Activity {
     private void OnScanClick() {
         Intent scannerIntent = new Intent(ScannerIntent.ACTION);
         scannerIntent.putExtra(ScannerIntent.EXTRA_BARCODE2_TYPES, requestedBarcodeTypes);
+        if (cameraToggle){
+            scannerIntent.putExtra(ScannerIntent.EXTRA_CAMERA_ID, 0);
+        }
+        else {
+            scannerIntent.putExtra(ScannerIntent.EXTRA_CAMERA_ID, 1);
+        }
+        cameraToggle = !cameraToggle;
         try {
             // The Vuzix smart glasses have a built-in Barcode Scanner app that is registered for this intent.
             startActivityForResult(scannerIntent, REQUEST_CODE_SCAN);
