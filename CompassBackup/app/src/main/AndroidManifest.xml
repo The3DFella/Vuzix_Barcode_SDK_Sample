@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Camera permission (kept from barcode scanner) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Permission to access fine location (needed for some compass implementations) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Declare the use of a compass sensor -->
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="true"/>
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"/>
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat">
+
+        <!-- Fully qualified class name for MainActivity with proper export attribute -->
+        <activity
+            android:name="com.nivra.compass.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

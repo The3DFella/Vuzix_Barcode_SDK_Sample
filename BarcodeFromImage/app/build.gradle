@@ -30,6 +30,7 @@ android {
     }
     productFlavors {
     }
+    namespace 'com.vuzix.sample.barcode_from_image'
 }
 
 dependencies {
